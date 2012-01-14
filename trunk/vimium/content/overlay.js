@@ -10,7 +10,15 @@ var Vimium = {
 	onPageLoad: function(e) {
 		var doc = gBrowser.contentDocument;
 		doc.vimium = {};
+		doc.vimium.cmd_search = '';
 		doc.addEventListener('keydown', Vimium.onKeydown, true);
+	},
+
+	keymap: {
+		'f': function() { Vimium.activateMode(Vimium.activateCallback, false) },
+		'F': function() { Vimium.activateMode(Vimium.activateCallback, true) },
+		'yf': function() { Vimium.activateMode(Vimium.copyCallback, 'link') },
+		'yy': function() { Vimium.copyCallback(null, 'location'); },
 	},
 
 	// Vimium
@@ -245,7 +253,7 @@ var Vimium = {
 	  return focusableElements.indexOf(nodeName) >= 0;
 	},
 	// /Vimium
-	activateMode: function(callback) {
+	activateMode: function(callback, arg) {
 		var doc = gBrowser.contentDocument;
 		if(!doc.cssAdded) {
 			this.addCssToPage(this.linkHintCss);
@@ -257,6 +265,7 @@ var Vimium = {
 		}
 		doc.vimium.active = true;
 		doc.vimium.activate_callback = callback;
+		doc.vimium.activate_callback_arg = arg;
 	},
 	deactivateMode: function() {
 		var doc = gBrowser.contentDocument;
@@ -264,23 +273,51 @@ var Vimium = {
 			doc.vimium.hints.parentNode.removeChild(doc.vimium.hints);
 		doc.vimium.active = false;
 	},
-	activateCallback: function(e) {
+	activateCallback: function(e, newTab) {
 		var doc = gBrowser.contentDocument;
 		if(Vimium.isEditable(e)) {
 			e.focus();
 		} else {
 			var evt = doc.createEvent("MouseEvents");
-			evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+			evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, newTab, false, false, false, 0, null);
 			e.dispatchEvent(evt);
+		}
+	},
+	copyCallback: function(e, target) {
+		const gClipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].getService(Components.interfaces.nsIClipboardHelper);  
+		switch(target) {
+			case 'link':
+				gClipboardHelper.copyString(e.toString());  
+				break;
+			case 'location':
+				var doc = gBrowser.contentDocument;
+				gClipboardHelper.copyString(doc.location);
+				break;
 		}
 	},
 	onKeydown: function(e) { 
 		var doc = gBrowser.contentDocument;
 		var keyChar = String.fromCharCode(e.keyCode).toLowerCase();
+		if (e.shiftKey)
+			keyChar = keyChar.toUpperCase();
 		var active = doc.vimium.active;
 		var editable = Vimium.isEditable(e.target);
-		if(!active && !editable && keyChar == 'f') {
-			Vimium.activateMode(Vimium.activateCallback);
+		if(!active && !editable) {
+			doc.vimium.cmd_search += keyChar;
+			var match, matched = [];
+			for(var key in Vimium.keymap) {
+				match = key.substr(0, doc.vimium.cmd_search.length) == doc.vimium.cmd_search;
+				if(match)
+					matched.push(key);
+			}
+			if(matched.length == 1 && matched[0] == doc.vimium.cmd_search) {
+				Vimium.keymap[matched[0]]();
+				doc.vimium.cmd_search = '';
+			}
+			if(matched.length <= 0)
+				doc.vimium.cmd_search = '';
+		} else if(!active && !editable && keyChar == 'F') {
+			Vimium.activateMode(Vimium.activateCallback, true);
 		} else if(!active && editable && e.ctrlKey && e.keyCode == KeyEvent.DOM_VK_OPEN_BRACKET) {
 			e.target.blur();
 			e.preventDefault();
@@ -288,15 +325,15 @@ var Vimium = {
 			Vimium.deactivateMode();
 		} else if(active && e.keyCode == KeyEvent.DOM_VK_BACK_SPACE) {
 			doc.vimium.search = doc.vimium.search.substr(0, doc.vimium.search.length-1);
-			Vimium.refreshHints(doc.vimium.search);
+			Vimium.searchHints(doc.vimium.search);
 		} else if(active && Vimium.linkHintCharacters.indexOf(keyChar) > -1) {
 			doc.vimium.search += keyChar;
-			Vimium.refreshHints(doc.vimium.search);
+			Vimium.searchHints(doc.vimium.search);
 			e.preventDefault();
 			e.stopPropagation();
 		}
 	},
-	refreshHints: function(s) {
+	searchHints: function(s) {
 		var doc = gBrowser.contentDocument;
 		var hints = [];
 		for(var i = 0; i < doc.vimium.hintMarkers.length; i++)
@@ -307,10 +344,11 @@ var Vimium = {
 			e.marker.style.visibility = match ? "" : "hidden";
 			return(match);
 		});
-		if(matched.length == 1) {
-			doc.vimium.activate_callback(matched[0].element);
+		if(matched.length == 1 && matched[0].marker.attributes.hintstring.value == s) {
+			doc.vimium.activate_callback(matched[0].element, doc.vimium.activate_callback_arg);
+			Vimium.deactivateMode();
 		}
-		if(matched.length <= 1)
+		if(matched.length <= 0)
 			Vimium.deactivateMode();
 	},
 };
