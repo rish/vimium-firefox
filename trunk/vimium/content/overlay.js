@@ -238,7 +238,7 @@ var Vimium = {
 	    return true;
 	  var nodeName = target.nodeName.toLowerCase();
 	  // use a blacklist instead of a whitelist because new form controls are still being implemented for html5
-	  var noFocus = ["radio", "checkbox"];
+	  var noFocus = ["radio", "checkbox", "button", "submit"];
 	  if (nodeName == "input" && noFocus.indexOf(target.type) == -1)
 	    return true;
 	  var focusableElements = ["textarea", "select"];
