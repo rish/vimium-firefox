@@ -1,3 +1,3 @@
 #!/bin/bash
 cd vimium/
-zip -r ../vimium.xpi ./
+zip --exclude='*.svn/*' -r ../vimium.xpi ./
