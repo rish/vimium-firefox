@@ -303,7 +303,7 @@ var Vimium = {
 			keyChar = keyChar.toUpperCase();
 		var active = doc.vimium.active;
 		var editable = Vimium.isEditable(e.target);
-		if(!active && !editable) {
+		if(!active && !editable && !e.ctrlKey) {
 			doc.vimium.cmd_search += keyChar;
 			var match, matched = [];
 			for(var key in Vimium.keymap) {
@@ -317,8 +317,6 @@ var Vimium = {
 			}
 			if(matched.length <= 0)
 				doc.vimium.cmd_search = '';
-		} else if(!active && !editable && keyChar == 'F') {
-			Vimium.activateMode(Vimium.activateCallback, true);
 		} else if(!active && editable && e.ctrlKey && e.keyCode == KeyEvent.DOM_VK_OPEN_BRACKET) {
 			e.target.blur();
 			e.preventDefault();
