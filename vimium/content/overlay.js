@@ -113,7 +113,7 @@ var Vimium = {
 	      }
 	
 	      if (element.localName === "area") {
-	        var map = element.parentElement;
+	        var map = element.parentNode;
 	        var img = doc.querySelector("img[usemap='#" + map.getAttribute("name") + "']");
 	        var clientRect = img.getClientRects()[0];
 	        var c = element.coords.split(/,/);
