@@ -9,7 +9,8 @@ var Vimium = {
 
 	onPageLoad: function(e) {
 		var doc = gBrowser.contentDocument;
-		doc.vimium = {};
+		if(!doc.vimium)
+			doc.vimium = {};
 		doc.vimium.cmd_search = '';
 		doc.addEventListener('keydown', Vimium.onKeydown, true);
 	},
