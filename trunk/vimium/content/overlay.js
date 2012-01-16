@@ -3,17 +3,15 @@ var Vimium = {
 		// initialization code
 		this.initialized = true;
 		document.addEventListener('keydown', Vimium.onKeydown, true);
-//		var appcontent = document.getElementById("appcontent");   // browser  
-//		if(appcontent)  
-//			appcontent.addEventListener("DOMContentLoaded", Vimium.onPageLoad, true);  
+		var appcontent = document.getElementById("appcontent");   // browser  
+		if(appcontent)  
+			appcontent.addEventListener("DOMContentLoaded", Vimium.onPageLoad, true);  
 	},
 
 	onPageLoad: function(e) {
 		var doc = gBrowser.contentDocument;
-		if(!doc.vimium)
-			doc.vimium = {};
-		doc.vimium.cmd_search = '';
-		doc.addEventListener('keydown', Vimium.onKeydown, true);
+		if(doc.activeElement)
+			doc.activeElement.blur();
 	},
 
 	keymap: {
