@@ -2,9 +2,10 @@ var Vimium = {
 	init: function() {
 		// initialization code
 		this.initialized = true;
-		var appcontent = document.getElementById("appcontent");   // browser  
-		if(appcontent)  
-			appcontent.addEventListener("DOMContentLoaded", Vimium.onPageLoad, true);  
+		document.addEventListener('keydown', Vimium.onKeydown, true);
+//		var appcontent = document.getElementById("appcontent");   // browser  
+//		if(appcontent)  
+//			appcontent.addEventListener("DOMContentLoaded", Vimium.onPageLoad, true);  
 	},
 
 	onPageLoad: function(e) {
@@ -296,14 +297,22 @@ var Vimium = {
 				break;
 		}
 	},
+	initDoc: function() {
+		var vimium = {};
+		vimium.cmd_search = '';
+		vimium.search = '';
+		return(vimium);
+	},
 	onKeydown: function(e) { 
 		var doc = gBrowser.contentDocument;
 		var keyChar = String.fromCharCode(e.keyCode).toLowerCase();
 		if (e.shiftKey)
 			keyChar = keyChar.toUpperCase();
+		if(!doc.vimium)
+			doc.vimium = Vimium.initDoc();
 		var active = doc.vimium.active;
 		var editable = Vimium.isEditable(e.target);
-		if(!active && !editable && !e.ctrlKey) {
+		if(!active && !editable && e.target.innerHTML && !e.ctrlKey) {
 			doc.vimium.cmd_search += keyChar;
 			var match, matched = [];
 			for(var key in Vimium.keymap) {
