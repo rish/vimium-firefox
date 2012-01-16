@@ -19,6 +19,10 @@ var Vimium = {
 		'F': function() { Vimium.activateMode(Vimium.activateCallback, true) },
 		'yf': function() { Vimium.activateMode(Vimium.copyCallback, 'link') },
 		'yy': function() { Vimium.copyCallback(null, 'location'); },
+		'j': function() { gBrowser.contentDocument.defaultView.scrollBy(0,19); },
+		'k': function() { gBrowser.contentDocument.defaultView.scrollBy(0,-19); },
+		'h': function() { gBrowser.contentDocument.defaultView.scrollBy(-19,0); },
+		'l': function() { gBrowser.contentDocument.defaultView.scrollBy(19,0); },
 	},
 
 	// Vimium
