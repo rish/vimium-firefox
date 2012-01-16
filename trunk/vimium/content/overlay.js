@@ -257,7 +257,7 @@ var Vimium = {
 		var doc = gBrowser.contentDocument;
 		if(!doc.cssAdded) {
 			this.addCssToPage(this.linkHintCss);
-			doc.cssAdded = true;
+			doc.vimium.cssAdded = true;
 		}
 		if(!doc.getElementsByClassName('internalVimiumHintMarker').length) {
 			doc.vimium.hints = this.buildLinkHints();

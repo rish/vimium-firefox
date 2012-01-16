@@ -1,13 +1,6 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://helloworld/skin/overlay.css" type="text/css"?>
-<!DOCTYPE overlay SYSTEM "chrome://helloworld/locale/overlay.dtd">
-<overlay id="helloworld-overlay"
+<overlay id="vimium-overlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script src="keyboardUtils.js"/>
   <script src="overlay.js"/>
-<!-- <keyset id="mainKeyset">
-  <key key="f" oncommand="Vimium.activateMode()"/>
-  <key key="[" modifiers="control" oncommand="alert('blur')"/>
-</keyset> -->
 
 </overlay>
