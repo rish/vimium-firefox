@@ -3,15 +3,6 @@ var Vimium = {
 		// initialization code
 		this.initialized = true;
 		document.addEventListener('keydown', Vimium.onKeydown, true);
-		var appcontent = document.getElementById("appcontent");   // browser  
-		if(appcontent)  
-			appcontent.addEventListener("DOMContentLoaded", Vimium.onPageLoad, true);  
-	},
-
-	onPageLoad: function(e) {
-		var doc = gBrowser.contentDocument;
-		if(doc.activeElement)
-			doc.activeElement.blur();
 	},
 
 	keymap: {
@@ -336,8 +327,10 @@ var Vimium = {
 			}
 			if(matched.length <= 0)
 				doc.vimium.cmd_search = '';
-		} else if(!active && editable && e.ctrlKey && e.keyCode == KeyEvent.DOM_VK_OPEN_BRACKET) {
+		} else if(e.ctrlKey && e.keyCode == KeyEvent.DOM_VK_OPEN_BRACKET) {
 			e.target.blur();
+			if(doc.body)
+				doc.defaultView.focus();
 			e.preventDefault();
 		} else if(active && e.keyCode == KeyEvent.DOM_VK_ESCAPE) {
 			Vimium.deactivateMode();
