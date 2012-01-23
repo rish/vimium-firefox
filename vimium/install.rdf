@@ -6,16 +6,10 @@
   
     <em:id>minoru-kun@inbox.ru</em:id>
     <em:name>Vimium</em:name>
-    <em:version>1.35</em:version>
+    <em:version>1.36</em:version>
     <em:description>The Hacker's Browser. Vimium provides keyboard shortcuts for navigation and control in the spirit of Vim.</em:description>
     <em:creator>Valentin Dudouyt</em:creator>
-    <!-- optional items -->
-    <em:contributor>Nickolay Ponomarev</em:contributor>
-    <!-- <em:homepageURL>http://kb.mozillazine.org/Getting_started_with_extension_development</em:homepageURL> -->
-    <!-- <em:optionsURL>chrome://vimium/content/options.xul</em:optionsURL> -->
-    <!--<em:aboutURL>chrome://sampleext/content/about.xul</em:aboutURL>
-    <em:iconURL>chrome://sampleext/skin/mainicon.png</em:iconURL>
-    <em:updateURL>http://sampleextension.mozdev.org/update.rdf</em:updateURL-->
+    <em:type>2</em:type>
 
     <!-- Firefox -->
     <em:targetApplication>
