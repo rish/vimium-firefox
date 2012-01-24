@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<prefwindow id="vimium-prefs"  
+     title="Vimium Options"  
+     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+     <prefpane id="sw2-stock-pane" label="Stock Settings" flex="1">
+	<preferences>
+		<preference id="keybindings" name="extensions.vimium.keybindings" type="string" />
+	</preferences>
+	<tabbox  flex="1">
+	<tabs>
+		<tab label="Keymap"/>
+		<tab label="Hinting"/>
+	</tabs>
+	<tabpanels flex="1">
+	<vbox flex="1" style="overflow: auto; width: 700px; height: 400px;">
+		<tree id="tree1" flex="1" hidecolumnpicker="true" seltype="single" editable="true"
+					onchange="validateKeymap(this)"
+					onkeypress="onKeypress(this, event)">
+			<treecols>
+				<treecol id="keybind"  flex="1" label="Keybinding" />
+				<treecol id="descr"  flex="1" label="Description" />
+				<treecol id="code"  flex="5" label="Action" />
+			</treecols>
+			<treechildren>
+			</treechildren>
+		</tree>
+		<hbox>
+			<button flex="1" label="Add" accesskey="A" oncommand="startEditing($('tree1'))"/>
+			<button flex="1" label="Delete" accesskey="D" oncommand="removeCurrentRow($('tree1'))"/>
+		</hbox>
+	</vbox>
+	<vbox>
+	</vbox>
+	</tabpanels>
+	</tabbox>
+	<script type="text/javascript" src="options.js"></script>
+</prefpane>
+</prefwindow>
