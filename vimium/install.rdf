@@ -10,6 +10,7 @@
     <em:description>The Hacker's Browser. Vimium provides keyboard shortcuts for navigation and control in the spirit of Vim.</em:description>
     <em:creator>Valentin Dudouyt</em:creator>
     <em:type>2</em:type>
+    <em:optionsURL>chrome://vimium/content/options.xul</em:optionsURL>  
 
     <!-- Firefox -->
     <em:targetApplication>

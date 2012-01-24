@@ -136,27 +136,27 @@ var Vimium = {
 	    return visibleElements;
 	  },
 	buildLinkHints: function() {
-			var doc = gBrowser.contentDocument;
-	    doc.vimium.visibleElements = this.getVisibleClickableElements();
-	    doc.vimium.hintMarkers = this.getHintMarkers(doc.vimium.visibleElements);
-	
-	    // Note(philc): Append these markers as top level children instead of as child nodes to the link itself,
-	    // because some clickable elements cannot contain children, e.g. submit buttons. This has the caveat
-	    // that if you scroll the page and the link has position=fixed, the marker will not stay fixed.
-	    // Also note that adding these nodes to document.body all at once is significantly faster than one-by-one.
-	    var hintMarkerContainingDiv = doc.createElement("div");
-	    hintMarkerContainingDiv.className = "internalVimiumHintMarker";
-	    for (var i = 0; i < doc.vimium.hintMarkers.length; i++)
-	      hintMarkerContainingDiv.appendChild(doc.vimium.hintMarkers[i]);
-	
-	    // sometimes this is triggered before documentElement is created
-	    // TODO(int3): fail more gracefully?
-	    if (doc.documentElement)
-	      doc.documentElement.appendChild(hintMarkerContainingDiv);
-	    else
-	      Vimium.deactivateMode();
-	    return(hintMarkerContainingDiv);
-	  },
+		var doc = gBrowser.contentDocument;
+		doc.vimium.visibleElements = this.getVisibleClickableElements();
+		doc.vimium.hintMarkers = this.getHintMarkers(doc.vimium.visibleElements);
+		
+		// Note(philc): Append these markers as top level children instead of as child nodes to the link itself,
+		// because some clickable elements cannot contain children, e.g. submit buttons. This has the caveat
+		// that if you scroll the page and the link has position=fixed, the marker will not stay fixed.
+		// Also note that adding these nodes to document.body all at once is significantly faster than one-by-one.
+		var hintMarkerContainingDiv = doc.createElement("div");
+		hintMarkerContainingDiv.className = "internalVimiumHintMarker";
+		for (var i = 0; i < doc.vimium.hintMarkers.length; i++)
+			hintMarkerContainingDiv.appendChild(doc.vimium.hintMarkers[i]);
+		
+		// sometimes this is triggered before documentElement is created
+		// TODO(int3): fail more gracefully?
+		if (doc.documentElement)
+			doc.documentElement.appendChild(hintMarkerContainingDiv);
+		else
+			Vimium.deactivateMode();
+		return(hintMarkerContainingDiv);
+	},
 	hintUtils: {
 	    /*
 	     * Make each hint character a span, so that we can highlight the typed characters as you type them.
