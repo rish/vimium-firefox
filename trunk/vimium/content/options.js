@@ -2,6 +2,11 @@ function $(x) { return document.getElementById(x) }
 var keybindings_pref = document.getElementById('keybindings');
 var tree = document.getElementById('tree1');
 //alert(keybindings_pref.value);
+
+var prefs = Components.classes["@mozilla.org/preferences-service;1"]
+         .getService(Components.interfaces.nsIPrefBranch)
+         .QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+
 function validateKeymap(tree) {
 	console.log('validateKeymap row='+tree.editingRow);
 }
@@ -53,4 +58,8 @@ function onKeypress(tree, event) {
 				removeCurrentRow(tree);
 			break;
 	}
+}
+
+function savePrefs() {
+	alert('savePrefs');
 }
