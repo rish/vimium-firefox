@@ -10,23 +10,21 @@ var prefs = Components.classes["@mozilla.org/preferences-service;1"]
 function validateKeymap(tree) {
 	console.log('validateKeymap row='+tree.editingRow);
 }
-function startEditing(tree) {
-	// add a new row
+function addRow(tree, cols) {
 	var treeitem = document.createElement('treeitem');
 	var treerow = document.createElement('treerow');
-	var cells = [];
-	for(var i = 0; i < 3; i++) {
+	for(var i = 0; i < cols.length; i++) {
 		var cell = document.createElement('treecell');
 		cell.setAttribute('editable', true);
-		if(i == 2)
-			cell.setAttribute('label', 'function(doc, api) { }');
+		cell.setAttribute('label', cols[i]);
 		treerow.appendChild(cell);
 	}
 	var treechildren = tree.getElementsByTagName('treechildren')[0];
 	treeitem.appendChild(treerow);
 	treechildren.appendChild(treeitem);
-	// start editing
 	tree.view.selection.select(tree.view.rowCount-1);
+}
+function startEditing(tree) {
 	tree.startEditing(tree.view.rowCount-1, tree.columns[0]);
 }
 function removeCurrentRow(tree) {
@@ -60,6 +58,76 @@ function onKeypress(tree, event) {
 	}
 }
 
-function savePrefs() {
-	alert('savePrefs');
+function mapRows(tree, callback) {
+	var rows = tree.getElementsByTagName('treerow');
+	for(var i = 0; i < rows.length; i++) {
+		var cells = rows[i].getElementsByTagName('treecell');
+		var labels = Array.map(cells, function(cell) { return(cell.getAttribute('label')) });
+		callback(labels, cells);
+	}
 }
+function savePrefs() {
+	console.log('savePrefs()');
+	// Validating keymap
+	var i = 0;
+	var err = [];
+	var keymap = [];
+	mapRows($('tree1'), function(row) {
+		i++;
+		if(!row[0].length)
+			err.push("Void key sequence at " + i.toString());
+		keymap.push(row);
+	});
+	// Validating xpaths
+	var xpath = [];
+	var dom = document.implementation.createDocument ('http://www.w3.org/1999/xhtml', 'html', null);
+	i = 0;
+	mapRows($('tree2'), function(row) {
+		i++;
+		try {
+			dom.evaluate('//a', dom.body, null, null, null);
+		} catch(error) {
+			err.push(error + " at " + i.toString());
+		}
+		xpath.push(row);
+	});
+	if(err.length) {
+		alert(err.join("\n"));
+	} else {
+		// Applying settings
+		prefs.setCharPref('extensions.vimium.keymap', JSON.stringify(keymap));
+		prefs.setCharPref('extensions.vimium.xpath', JSON.stringify(xpath));
+	}
+}
+
+// Installing handlers
+function add_keymap_handler() {
+	addRow($('tree1'), ['', '', 'function(doc, api) { }']);
+	startEditing($('tree1'));
+}
+$('add_button_1').addEventListener('command', add_keymap_handler);
+function add_xpath_handler() {
+	var xpath = $('xpath-input').value;
+	if (xpath)
+		addRow($('tree2'), [xpath]);
+	$('xpath-input').value = "";
+}
+$('add_button_2').addEventListener('command', add_xpath_handler);
+$('tabbox').addEventListener('select', function(e) {
+	switch(e.target.selectedItem.id) {
+		case "hinting-prefs":
+			setTimeout(function() { $('xpath-input').focus(); }, 0);
+			break;
+		default:
+	}
+});
+window.addEventListener('DOMContentLoaded', function() { 
+	var keymap_pref = prefs.getCharPref('extensions.vimium.keymap');
+	var keymap_rows = JSON.parse(keymap_pref);
+	var xpath_pref = prefs.getCharPref('extensions.vimium.xpath');
+	var xpath_rows = JSON.parse(xpath_pref);
+	for(var i = 0; i < keymap_rows.length; i++)
+		addRow($('tree1'), keymap_rows[i]);
+	for(var i = 0; i < xpath_rows.length; i++)
+		addRow($('tree2'), xpath_rows[i]);
+});

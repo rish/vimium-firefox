@@ -5,10 +5,10 @@
      buttons="accept, cancel"
      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
      ondialogaccept="savePrefs();">
-	<tabbox  flex="1">
+	<tabbox id='tabbox' flex="1">
 		<tabs>
-			<tab label="Keymap"/>
-			<tab label="Hinting"/>
+			<tab id="keymap-prefs" label="Keymap"/>
+			<tab id="hinting-prefs" label="Hinting"/>
 		</tabs>
 		<tabpanels flex="1">
 			<vbox flex="1" style="overflow: auto; width: 700px; height: 400px;">
@@ -24,7 +24,7 @@
 					</treechildren>
 				</tree>
 				<hbox>
-					<button flex="1" label="Add" accesskey="A" oncommand="startEditing($('tree1'))"/>
+					<button flex="1" id="add_button_1" label="Add" accesskey="A"/>
 					<button flex="1" label="Delete" accesskey="D" oncommand="removeCurrentRow($('tree1'))"/>
 				</hbox>
 			</vbox>
@@ -32,12 +32,15 @@
 				<tree id="tree2" flex="1" hidecolumnpicker="true" seltype="single" editable="true"
 							onchange="validateKeymap(this)"
 							onkeypress="onKeypress(this, event)">
+					<treecols>
+						<treecol id="xpath"  flex="1" hideheader="true"/>
+					</treecols>
 					<treechildren>
 					</treechildren>
 				</tree>
 				<hbox>
 					<textbox id="xpath-input" flex="6"/>
-					<button flex="1" label="Add" accesskey="A" oncommand="startEditing($('tree2'))"/>
+					<button flex="1" id="add_button_2" label="Add" accesskey="A"/>
 					<button flex="1" label="Delete" accesskey="D" oncommand="removeCurrentRow($('tree2'))"/>
 				</hbox>
 			</vbox>
