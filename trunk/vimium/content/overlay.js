@@ -252,6 +252,12 @@ var Vimium = {
 	  var noFocus = ["radio", "checkbox", "button", "submit"];
 	  if (nodeName == "input" && noFocus.indexOf(target.type) == -1)
 	    return true;
+	  var active = gBrowser.contentDocument.activeElement;
+	  // Gmail kludges
+	  if(target.className.indexOf('editable') >= 0)
+	    return true;
+	  if(active && active.className.indexOf('editable') >= 0)
+	    return true;
 	  var focusableElements = ["textarea", "select"];
 	  return focusableElements.indexOf(nodeName) >= 0;
 	},
@@ -339,6 +345,9 @@ var Vimium = {
 				doc.vimium.cmd_search = '';
 		} else if(e.ctrlKey && e.keyCode == KeyEvent.DOM_VK_OPEN_BRACKET) {
 			e.target.blur();
+			var active = gBrowser.contentDocument.activeElement;
+			if(active)
+				active.blur();
 			if(doc.body)
 				doc.defaultView.focus();
 			e.preventDefault();
