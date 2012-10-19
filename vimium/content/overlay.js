@@ -20,7 +20,7 @@ var Vimium = {
 		},
 		'G': function() { 
 			var doc = gBrowser.contentDocument;
-			doc.defaultView.scrollTo(0, doc.body.parentElement.scrollHeight)
+			doc.defaultView.scrollTo(0, doc.body.parentNode.scrollHeight)
 		},
 	},
 
